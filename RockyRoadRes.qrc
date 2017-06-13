@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/RockyRoad/Images">
+        <file>Resources/Ice Cream Logo.png</file>
+        <file>Resources/Rocky Road V1.png</file>
+        <file>Resources/Visionox Logo Favicon.png</file>
+    </qresource>
+</RCC>
