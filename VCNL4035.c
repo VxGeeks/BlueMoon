@@ -32,11 +32,11 @@ static int i2c_file;
 int baseline_Prox[3]= {0,0,0};
 int newVal_Prox[3]= {0,0,0};
 int triggerVal_Prox[3]= {0,0,0};
-int trigger_Swipe = 0;
+
 int trigger_ActiveWindow_Counter = MAX_ACTIVE_WINDOW_CTR;
 int valALS = 0;
 int valWHITE = 0;
-
+    int trigger_Swipe = 0;
 int gestureDetected = GESTURE_NONE;
 
 int VCNL_init(void)
@@ -60,15 +60,49 @@ int VCNL_init(void)
         {
             VCNL_read(0x0B,2,temp_buf);
 
-             // // Configure VCNL
-            // Set LED current
+             //Configure VCNL
+/*
+            temp_buf[0]=0b00000001;
+            temp_buf[1]=0b00000001;
+            VCNL_write(VNCL4035_ALS_CONF_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b11111111;
+            temp_buf[1]=0b11111111;
+            VCNL_write(VNCL4035_ALS_THDH_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b00000000;
+            temp_buf[1]=0b00000000;
+            VCNL_write(VNCL4035_ALS_THDL_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b10010100;
+            temp_buf[1]=0b11111011;
+            VCNL_write(VNCL4035_PS_CONF12_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b00001000;
+            temp_buf[1]=0b00000100;
+            VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
+
+            //Set PS Cancel Level
+            temp_buf[0]=0x00;
+            temp_buf[1]=0x00;
+            VCNL_write(VNCL4035_PS_CNCL_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b10010110;
+            temp_buf[1]=0b00000000;
+            VCNL_write(VNCL4035_PS_THDL_ADDR,2,temp_buf);
+
+            temp_buf[0]=0b10010000;
+            temp_buf[1]=0b00000001;
+            VCNL_write(VNCL4035_PS_THDH_ADDR,2,temp_buf);
+       */
+
             temp_buf[0]=0x08;
             temp_buf[1]=0x01;
             VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
             // Set LED Duty Cycle
             temp_buf[0]=0x4E;
             temp_buf[1]=0x48;
-            VCNL_write(VNCL4035_PS_CONF1_ADDR,2,temp_buf);
+            VCNL_write(VNCL4035_PS_CONF12_ADDR,2,temp_buf);
             // Set Ambient Light Integration Time
             temp_buf[0]=0x40;
             temp_buf[1]=0x00;
@@ -79,29 +113,61 @@ int VCNL_init(void)
             VCNL_write(VNCL4035_PS_THDL_ADDR,2,temp_buf);
 
 
-            // Set baseline for Prox Sensors
             for (i = 0; i<3; i++)
+                        {
+                            long accum = 0;
+
+                            for (j = 0; j<8; j++)
+                            {
+                                // Reset prox sensor scan
+                                temp_buf[0]=0x0C;
+                                temp_buf[1]=0x01;
+                                VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
+
+                                Delay_Ms(34);
+
+                                VCNL_read(VNCL4035_PROX1_ADDR + i,2,temp_buf);
+
+                                accum += (((int) temp_buf[1] << 8) + (int) temp_buf[0]);
+                            }
+
+                            baseline_Prox[i] = accum / 8;
+                        }
+
+
+
+/*
+            // Set baseline for Prox Sensors
+            long accum[3] = {0,0,0};
+            for (j = 0; j<8; j++)
             {
-                long accum = 0;
+                // Reset prox sensor scan
+                temp_buf[0]=0b00001100;
+                temp_buf[1]=0b00000100;
+                VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
 
-                for (j = 0; j<8; j++)
-                {
-                    // Reset prox sensor scan
-                    temp_buf[0]=0x0C;
-                    temp_buf[1]=0x01;
-                    VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
+                Delay_Ms(34);
 
-                    Delay_Ms(34);
+                VCNL_read(VNCL4035_PROX1_ADDR,2,temp_buf);
+                accum[0] += (((int) temp_buf[1] << 8) + (int) temp_buf[0]);
 
-                    VCNL_read(VNCL4035_PROX1_ADDR + i,2,temp_buf);
+                VCNL_read(VNCL4035_PROX2_ADDR,2,temp_buf);
+                accum[1] += (((int) temp_buf[1] << 8) + (int) temp_buf[0]);
 
-                    accum += (((int) temp_buf[1] << 8) + (int) temp_buf[0]);
-                }
+                VCNL_read(VNCL4035_PROX3_ADDR,2,temp_buf);
+                accum[2] += (((int) temp_buf[1] << 8) + (int) temp_buf[0]);
 
-                baseline_Prox[i] = accum / 8;
+
             }
 
-        }
+            baseline_Prox[0] = (int) (accum[0] / 8);
+            baseline_Prox[1] = (int) (accum[1] / 8);
+            baseline_Prox[2] = (int) (accum[2] / 8);
+ */
+       }
+
+
+
 
     }
 
@@ -116,6 +182,28 @@ int VCNL_readSensor(void)
 
     int i, j;
 
+/*    // Setup Next Read
+    temp_buf[0]=0x0C;
+    temp_buf[1]=0x04;
+    VCNL_write(VNCL4035_PS_MS_ADDR,2,temp_buf);
+
+     Delay_Ms(34);
+
+
+    VCNL_read(VNCL4035_PROX1_ADDR,2,temp_buf);    //PROX1
+    newVal_Prox[0] = (((int) temp_buf[1] << 8) + (int) temp_buf[0] ) - baseline_Prox[0];
+
+    VCNL_read(VNCL4035_PROX2_ADDR,2,temp_buf);    //PROX2
+    newVal_Prox[1] = (((int) temp_buf[1] << 8) + (int) temp_buf[0] ) - baseline_Prox[1];
+
+    VCNL_read(VNCL4035_PROX3_ADDR,2,temp_buf);    //PROX3
+    newVal_Prox[2] = (((int) temp_buf[1] << 8) + (int) temp_buf[0] ) - baseline_Prox[2];
+
+
+    triggerVal_Prox[0] = newVal_Prox[0];
+    triggerVal_Prox[1] = newVal_Prox[1];
+    triggerVal_Prox[2] = newVal_Prox[2];
+*/
 
     for (i=0; i<100; i++)
     {

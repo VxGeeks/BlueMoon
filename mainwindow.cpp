@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QTextStream>
+#include <QCloseEvent>
 
 //WiringPi Includes
 #include <wiringPi.h>
@@ -18,7 +19,7 @@
 // Displays Specific Includes
 extern "C" {
 
-#include "init_M00794.h"
+#include "M00794.h"
 #include "VCNL4035.h"
 #include "photo.h"
 #include "program.h"
@@ -67,6 +68,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_ApplicationExit()
+{
+
+    shutdown_Display();
+}
+
 void MainWindow::update()
 {
 
@@ -89,6 +96,8 @@ void MainWindow::update()
 
 
     all_R();
+    //row_135();
+    //img1();
 
 
 
