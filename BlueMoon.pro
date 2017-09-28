@@ -26,9 +26,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     Delay.c \
-    init_M00794.c \
     program.c \
-    VCNL4035.c
+    VCNL4035.c \
+    M00794.c
 
 HEADERS  += mainwindow.h \
     bma2x2.h \
@@ -42,9 +42,9 @@ HEADERS  += mainwindow.h \
     BMX_support.h \
     VCNL4035.h \
     IO.h \
-    init_M00794.h \
     photo.h \
-    program.h
+    program.h \
+    M00794.h
 
 FORMS    += mainwindow.ui
 

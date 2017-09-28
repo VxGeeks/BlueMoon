@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QTextStream>
+#include <QCloseEvent>
 
 //WiringPi Includes
 #include <wiringPi.h>
@@ -18,7 +19,7 @@
 // Displays Specific Includes
 extern "C" {
 
-#include "init_M00794.h"
+#include "M00794.h"
 #include "VCNL4035.h"
 #include "photo.h"
 #include "program.h"
@@ -67,6 +68,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_ApplicationExit()
+{
+
+    shutdown_Display();
+}
+
 void MainWindow::update()
 {
 
@@ -88,7 +95,9 @@ void MainWindow::update()
 
 
 
-    all_R();
+    //all_R();
+    //row_135();
+    //img1();
 
 
 
@@ -305,23 +314,21 @@ int MainWindow::initIceCreamHat()
     pullUpDnControl(4, PUD_UP); // Pull-UP
     wiringPiISR(4, INT_EDGE_FALLING, pointerToVCNL_INT);
 
-    // OLED Display IO
-
-
-
-
-
     //***************** Setup Display *****************
 
     setup_DisplayIO();
 
     init_LD7134();
 
-        all_screen();
+    //all_R();
+    //all_G();
+    //all_B();
     //img1();
+    //frame();
+    //column2();
 
 
-    ui->label_Status->setText("Display found and setup complete");
+    ui->label_Status->setText("OLED and Prox drivers loaded");
 
     //ui->label_Status->setText("Rocky Road ready!");
 
@@ -400,3 +407,33 @@ void MainWindow::JoySELECT_INT()
 
 
 
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    frame();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    all_R();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    all_G();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    all_B();
+}
+
+void MainWindow::on_Ipeak_sliderMoved(int position)
+{
+    ui->Peak_Current->setText(QString::number(position*16)+"uA");
+
+    write_com(0x0f);	//Set Dot Matrix Peak Current Level (0-1008uA)
+    write_dat((char)position);	//PR[5:0]	16uA Step
+    write_dat((char)position);	//PG[5:0]	16uA Step
+    write_dat((char)position);	//PB[5:0]	16uA Step
+}

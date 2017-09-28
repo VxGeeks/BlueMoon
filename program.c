@@ -1,5 +1,5 @@
 #include "photo.h"
-#include "init_M00794.h"
+#include "M00794.h"
 
 typedef char uchar;
 typedef unsigned int uint;
@@ -87,6 +87,13 @@ void all_R()
 void all_G()
 { 
 	uchar num,num1;	
+    write_com(0x0b);	//Set Diplay Start Address
+
+    write_dat(0x00);	//1st Parameter
+    write_dat(0x00);	//2st Parameter
+
+    write_dat(0x00);	//3st Parameter
+    write_dat(0x00);	//4st Parameter
 	write_com(0x0c);	//Read/Write Dot matrix Display Data
 	for(num=0;num<96;num++)
 	{
@@ -101,6 +108,13 @@ void all_G()
 void all_B()
 { 
 	uchar num,num1;	
+    write_com(0x0b);	//Set Diplay Start Address
+
+    write_dat(0x00);	//1st Parameter
+    write_dat(0x00);	//2st Parameter
+
+    write_dat(0x00);	//3st Parameter
+    write_dat(0x00);	//4st Parameter
 	write_com(0x0c);	//Read/Write Dot matrix Display Data
 	for(num=0;num<96;num++)
 	{
@@ -364,14 +378,7 @@ void img1()
 	write_dat(0x00);	//4st Parameter
 
     write_com(0x0c);	//Read/Write Dot matrix Display Data
-	for(k=0;k<32;k++)
-	{
-		for(j=0;j<96;j++)
-		{
-			write_dat(0x00);
-			write_dat(0x00);
-		}			
-	}
+
 	for(k=0;k<32;k++)
 	{
 		for(j=0;j<96;j++)
@@ -383,14 +390,7 @@ void img1()
 	}
 	
 			
-	for(k=0;k<32;k++)
-	{
-		for(j=0;j<96;j++)
-		{
-			write_dat(0x00);
-			write_dat(0x00);
-		}			
-	}	
+
 }
 
 void img2()						
