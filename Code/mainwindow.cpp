@@ -95,7 +95,11 @@ void MainWindow::update()
 
 
 
+<<<<<<< HEAD:mainwindow.cpp
     //all_R();
+=======
+    all_R();
+>>>>>>> 5091accfce539a34449b56e1443a9ec64df266ae:Code/mainwindow.cpp
     //row_135();
     //img1();
 
