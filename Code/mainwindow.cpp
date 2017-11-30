@@ -93,17 +93,7 @@ void MainWindow::update()
         ui->label_JoyStick->setText(QString::number(NewGesture));
     }
 
-
-
-<<<<<<< HEAD:mainwindow.cpp
-    //all_R();
-=======
     all_R();
->>>>>>> 5091accfce539a34449b56e1443a9ec64df266ae:Code/mainwindow.cpp
-    //row_135();
-    //img1();
-
-
 
 }
 
@@ -281,9 +271,7 @@ void MainWindow::on_pushButton_SaveAsCCode_clicked()
 //Initialize Ice Cream
 int MainWindow::initIceCreamHat()
 {
-    uint8_t temp_buf[2];
     // Setup wiringPi to enable i/o and other port related functions
-
     wiringPiSetup();
 
 

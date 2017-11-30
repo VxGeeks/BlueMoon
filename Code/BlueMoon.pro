@@ -31,15 +31,7 @@ SOURCES += main.cpp\
     M00794.c
 
 HEADERS  += mainwindow.h \
-    bma2x2.h \
     Delay.h \
-    Display_Mode.h \
-    bmm050.h \
-    IC.h \
-    IC_Init.h \
-    Photo_Show.h \
-    bmg160.h \
-    BMX_support.h \
     VCNL4035.h \
     IO.h \
     photo.h \
